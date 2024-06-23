@@ -1,0 +1,23 @@
+{
+  "name": "tapgame-tg",
+  "version": "1.0.0",
+  "description": "test tap game telegram",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kun3741/tapgame-tg.git"
+  },
+  "author": "kun3741",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kun3741/tapgame-tg/issues"
+  },
+  "homepage": "https://github.com/kun3741/tapgame-tg#readme",
+  "dependencies": {
+    "mongodb": "^6.7.0"
+  }
+}
