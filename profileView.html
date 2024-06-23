@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f0f0f0; font-family: Arial, sans-serif; }
+        #balance, #upgrade-level { margin-top: 10px; font-size: 20px; }
+        #error-message { color: red; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>User Profile</h1>
+    <h2>Telegram ID: <span id="telegramId"></span></h2>
+    <div id="balance">Balance: <span id="coins">0</span> coins</div>
+    <div id="upgrade-level">Upgrade Level: <span id="level">1</span></div>
+    <div id="error-message"></div>
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const telegramId = urlParams.get('telegramId');
+
+        document.getElementById('telegramId').textContent = telegramId;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const response = await fetch(`/user/${telegramId}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const user = await response.json();
+                validateAndDisplayUserData(user);
+            } catch (error) {
+                displayError('Error fetching user data: ' + error.message);
+                console.error('Error fetching user data:', error);
+            }
+        });
+
+        function validateAndDisplayUserData(user) {
+            if (typeof user.coins !== 'number' || typeof user.upgradeLevel !== 'number') {
+                displayError('Invalid user data received.');
+                return;
+            }
+            document.getElementById('coins').textContent = user.coins;
+            document.getElementById('level').textContent = user.upgradeLevel;
+        }
+
+        function displayError(message) {
+            const errorMessageElement = document.getElementById('error-message');
+            errorMessageElement.textContent = message;
+        }
+    </script>
+</body>
+</html>
