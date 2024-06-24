@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/kun3741/tapgame-tg#readme",
   "dependencies": {
+    "mongoose": "^8.4.3",
     "mongodb": "^6.7.0",
     "express": "^4.19.2"
   }
