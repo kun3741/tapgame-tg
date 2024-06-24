@@ -25,7 +25,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
 });
 
-app.get('/user/:telegramId', async (req, res) => {
+app.get('/api/user/:telegramId', async (req, res) => {
     const telegramId = req.params.telegramId;
     try {
         const user = await User.findOne({ telegramId });
@@ -39,7 +39,7 @@ app.get('/user/:telegramId', async (req, res) => {
     }
 });
 
-app.post('/update', async (req, res) => {
+app.post('/api/update', async (req, res) => {
     const { telegramId, coins, upgradeLevel } = req.body;
     try {
         const user = await User.findOneAndUpdate(
