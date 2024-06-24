@@ -16,16 +16,17 @@
     <button id="tap-button">Tap me!</button>
     <button id="upgrade-button">Upgrade (Cost: <span id="upgrade-cost">10</span> coins)</button>
     <div id="balance">Balance: 0 coins</div>
+    <div id="level">Update level: 0</div>
     <div id="error-message"></div>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const telegramId = urlParams.get('telegramId');
         let coins = 0;
         let upgradeLevel = 1;
-
+    
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                const response = await fetch(`/user/${telegramId}`);
+                const response = await fetch(`/api/user/${telegramId}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -35,13 +36,13 @@
                 displayError('Error fetching user data: ' + error.message);
                 console.error('Error fetching user data:', error);
             }
-
+    
             document.getElementById('tap-button').addEventListener('click', async () => {
                 coins += upgradeLevel;
                 updateUI();
                 await updateUser();
             });
-
+    
             document.getElementById('upgrade-button').addEventListener('click', async () => {
                 const upgradeCost = upgradeLevel * 10;
                 if (coins >= upgradeCost) {
@@ -51,12 +52,12 @@
                     await updateUser();
                 }
             });
-
+    
             window.addEventListener('beforeunload', async () => {
                 await updateUser();
             });
         });
-
+    
         function validateAndInitializeUserData(user) {
             if (typeof user.coins !== 'number' || typeof user.upgradeLevel !== 'number') {
                 displayError('Invalid user data received.');
@@ -64,18 +65,20 @@
             }
             coins = user.coins;
             upgradeLevel = user.upgradeLevel;
+    
             updateUI();
         }
-
+    
         function updateUI() {
             document.getElementById('tap-button').textContent = `Taps: ${coins}`;
             document.getElementById('upgrade-cost').textContent = upgradeLevel * 10;
             document.getElementById('balance').textContent = `Balance: ${coins} coins`;
+            document.getElementById('level').textContent = `Update level: ${upgradeLevel}`;
         }
-
+    
         async function updateUser() {
             try {
-                await fetch('/update', {
+                await fetch('/api/update', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ telegramId, coins, upgradeLevel })
@@ -86,11 +89,12 @@
                 console.error('Error updating user data:', error);
             }
         }
-
+    
         function displayError(message) {
             const errorMessageElement = document.getElementById('error-message');
             errorMessageElement.textContent = message;
         }
     </script>
+    
 </body>
 </html>
