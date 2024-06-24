@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node api/index.js"
   },
   "repository": {
     "type": "git",
@@ -18,6 +18,6 @@
   },
   "homepage": "https://github.com/kun3741/tapgame-tg#readme",
   "dependencies": {
-    "mongodb": "^6.7.0"
+    "mongodb": "^6.7.0",
+    "express": "^10.5.0"
   }
-}
