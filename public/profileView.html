@@ -24,7 +24,7 @@
     
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                const response = await fetch(`/api/user/${telegramId}`);
+                const response = await fetch(`/api/routes/user/${telegramId}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
