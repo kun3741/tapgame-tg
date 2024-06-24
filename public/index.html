@@ -26,7 +26,7 @@
     
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                const response = await fetch(`/api/user/${telegramId}`);
+                const response = await fetch(`/api/routes/user/${telegramId}`);
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
@@ -78,7 +78,7 @@
     
         async function updateUser() {
             try {
-                await fetch('/api/update', {
+                await fetch('/routes/api/update', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ telegramId, coins, upgradeLevel })
