@@ -12,5 +12,5 @@
    "dest": "/"
   }
  ],
-"installCommand": "npm install"
+"installCommand": "npm i express mongoose dotenv node-telegram-bot-api path"
 }
