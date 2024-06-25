@@ -3,7 +3,7 @@ const User = require('../../models/User');
 
 const router = express.Router();
 
-router.get('/user/:telegramId', async (req, res, next) => {
+router.get('/:telegramId', async (req, res, next) => {
     const telegramId = req.params.telegramId;
     console.log(`Fetching data for user with telegramId: ${telegramId}`);
     try {
@@ -15,7 +15,7 @@ router.get('/user/:telegramId', async (req, res, next) => {
         res.json(user);
     } catch (error) {
         console.error('Error fetching user data:', error);
-        next(error); 
+        res.status(500).json({ message: 'Internal server error' });
     }
 });
 
