@@ -8,6 +8,7 @@
         body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f0f0f0; font-family: Arial, sans-serif; }
         #balance { margin-top: 20px; font-size: 20px; }
         #error-message { color: red; margin-top: 20px; }
+        #back-button { margin-top: 20px; padding: 10px; font-size: 16px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
     </style>
 </head>
 <body>
@@ -15,13 +16,14 @@
     <h2>User ID: <span id="userId"></span></h2>
     <div id="balance">Balance: <span id="coins">0</span> coins</div>
     <div id="upgrade-level">Upgrade Level: <span id="level">1</span></div>
+    <button id="back-button">Back to Game</button>
     <div id="error-message"></div>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const telegramId = urlParams.get('telegramId');
-    
+
         document.getElementById('userId').textContent = telegramId;
-    
+
         document.addEventListener('DOMContentLoaded', async () => {
             try {
                 const response = await fetch(`/api/user/${telegramId}`);
@@ -35,7 +37,11 @@
                 console.error('Error fetching user data:', error);
             }
         });
-    
+
+        document.getElementById('back-button').addEventListener('click', () => {
+            window.location.href = `/index.html?telegramId=${telegramId}`;
+        });
+
         function validateAndDisplayUserData(user) {
             if (typeof user.coins !== 'number' || typeof user.upgradeLevel !== 'number') {
                 displayError('Invalid user data received.');
@@ -44,12 +50,11 @@
             document.getElementById('coins').textContent = user.coins;
             document.getElementById('level').textContent = user.upgradeLevel;
         }
-    
+
         function displayError(message) {
             const errorMessageElement = document.getElementById('error-message');
             errorMessageElement.textContent = message;
         }
     </script>
-    
 </body>
 </html>
