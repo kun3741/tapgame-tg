@@ -13,6 +13,7 @@ const UserSchema = new mongoose.Schema({
     upgradeLevel: {
         type: Number,
         default: 1
+    
     }
 });
 
