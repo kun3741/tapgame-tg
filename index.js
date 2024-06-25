@@ -37,5 +37,11 @@ app.use((err, req, res, next) => {
     res.status(500).send('Something broke!');
 });
 
+app.use((req, res, next) => {
+    console.log(`Request URL: ${req.url}`);
+    next();
+});
+
+
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
