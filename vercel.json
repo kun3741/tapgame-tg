@@ -19,5 +19,8 @@
       { "src": "/api/update/(.*)", "dest": "/api/routes/update.js" },
       { "src": "/(.*)", "dest": "/public/$1" }
   ],
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/api" }
+  ],
   "installCommand": "npm i cors express mongoose dotenv node-telegram-bot-api path"
 }
