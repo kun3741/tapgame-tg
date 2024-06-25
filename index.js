@@ -26,13 +26,13 @@ mongoose.connection.on('error', err => {
 const User = require('./models/User');
 
 // Маршрути
-app.use('/api', require('./api/routes/user'));
-app.use('/api', require('./api/routes/update'));
+app.use('/api/user', require('./api/routes/user'));
+app.use('/api/update', require('./api/routes/update'));
 
-app.use(express.static(path.join(__dirname, '..', 'public')));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 // Маршрут для отримання користувача

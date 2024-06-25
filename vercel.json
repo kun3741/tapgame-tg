@@ -2,7 +2,11 @@
   "version": 2,
   "builds": [
       {
-          "src": "api/routes/*.js",
+          "src": "api/routes/user.js",
+          "use": "@vercel/node"
+      },
+      {
+          "src": "api/routes/update.js",
           "use": "@vercel/node"
       },
       {
@@ -11,7 +15,8 @@
       }
   ],
   "routes": [
-      { "src": "/api/(.*)", "dest": "/api/routes/$1" },
+      { "src": "/api/user/(.*)", "dest": "/api/routes/user.js" },
+      { "src": "/api/update/(.*)", "dest": "/api/routes/update.js" },
       { "src": "/(.*)", "dest": "/public/$1" }
   ],
   "installCommand": "npm i cors express mongoose dotenv node-telegram-bot-api path"
