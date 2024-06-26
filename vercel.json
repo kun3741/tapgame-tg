@@ -14,8 +14,11 @@
           "use": "@vercel/static"
       }
   ],
-  "rewrites": [
-    { "source": "/(.*)", "destination": "/api/routes" }
+  "routes": [
+    { "src": "/api/user/(.*)", "dest": "/api/routes/user.js" },
+    { "src": "/api/update/(.*)", "dest": "/api/routes/update.js" },
+    { "src": "/(.*)", "dest": "/public/$1" }
   ],
+  
   "installCommand": "npm i cors express mongoose dotenv node-telegram-bot-api path"
 }
