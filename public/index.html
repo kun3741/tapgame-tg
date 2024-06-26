@@ -6,19 +6,19 @@
     <title>Tap Game</title>
     <style>
         body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f0f0f0; font-family: Arial, sans-serif; }
-        #tap-button, #profile-button { padding: 20px; font-size: 24px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
+        #tap-button { padding: 20px; font-size: 24px; cursor: pointer; background-color: #4CAF50; color: white; border: none; border-radius: 5px; }
         #upgrade-button { margin-top: 10px; padding: 10px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 5px; }
+        #profile-button { margin-top: 10px; padding: 10px; font-size: 16px; cursor: pointer; background-color: #FFC107; color: white; border: none; border-radius: 5px; }
         #balance { margin-top: 20px; font-size: 20px; }
         #error-message { color: red; margin-top: 20px; }
-        #profile-button { margin-top: 20px; }
     </style>
 </head>
 <body>
     <button id="tap-button">Tap me!</button>
     <button id="upgrade-button">Upgrade (Cost: <span id="upgrade-cost">10</span> coins)</button>
+    <button id="profile-button">Go to Profile</button>
     <div id="balance">Balance: 0 coins</div>
     <div id="level">Update level: 0</div>
-    <button id="profile-button">Go to Profile</button>
     <div id="error-message"></div>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
