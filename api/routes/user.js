@@ -7,7 +7,7 @@ router.get('/:telegramId', async (req, res, next) => {
     const telegramId = req.params.telegramId;
     console.log(`Fetching data for user with telegramId: ${telegramId}`);
     try {
-        const user = await User.findOne({ telegramId });
+        let user = await User.findOne({ telegramId });
         if (!user) {
             console.log(`User with telegramId: ${telegramId} not found. Creating new user.`);
             user = new User({ telegramId });
