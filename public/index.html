@@ -35,16 +35,22 @@
         }
 
         .fidget-spinner {
-            width: 100px;
-            height: 100px;
-            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='1em' height='1em' viewBox='0 0 24 24'%3E%3Cpath fill='white' d='M12 7a1 1 0 1 0 1 1a1 1 0 0 0-1-1m-5.696 9.134a1 1 0 1 0 1.366.366a1 1 0 0 0-1.366-.366m11.392 0a1 1 0 1 0 .366 1.366a1 1 0 0 0-.366-1.366m2.914-2.791a4.918 4.918 0 0 0-4.526-1.197l-.419-.763a4.989 4.989 0 0 0-2.503-8.251a5.035 5.035 0 0 0-4.279.958A4.978 4.978 0 0 0 7 8a4.929 4.929 0 0 0 1.352 3.392l-.419.75a4.989 4.989 0 0 0-5.926 6.286a5.03 5.03 0 0 0 2.97 3.226a4.97 4.97 0 0 0 6.588-3.19l.867.014a4.981 4.981 0 0 0 4.76 3.524a5.017 5.017 0 0 0 4.8-3.573a4.95 4.95 0 0 0-1.382-5.086m-.528 4.495a3.006 3.006 0 0 1-4.386 1.76a2.965 2.965 0 0 1-1.352-1.705a1.994 1.994 0 0 0-1.91-1.43h-.869a1.995 1.995 0 0 0-1.91 1.43a2.98 2.98 0 0 1-3.948 1.899a2.993 2.993 0 0 1 1.767-5.704a1.967 1.967 0 0 0 2.173-.942l.436-.754a1.995 1.995 0 0 0-.281-2.369a2.98 2.98 0 0 1 .329-4.37a2.993 2.993 0 0 1 4.069 4.369a2 2 0 0 0-.283 2.37l.435.753a1.974 1.974 0 0 0 2.174.943a2.988 2.988 0 0 1 3.556 3.75'/%3E%3C/svg%3E") no-repeat center center;
-            background-size: contain;
-            animation: spin 2s linear infinite;
+            width: 80px;
+            aspect-ratio: 1;
+            border: 10px solid #000;
+            box-sizing: border-box;
+            background: 
+            radial-gradient(farthest-side at right,#fff 98%,#0000) 20% 50%/40% 80%,
+            radial-gradient(farthest-side at left ,#fff 98%,#0000) 80% 50%/40% 80%,
+            #000;
+            background-repeat: no-repeat;
+            filter: blur(4px) contrast(10); 
+            animation: l18 0.8s infinite alternate;
         }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        
+        @keyframes l18 {
+            0%,20% {background-position:20% 50%,80% 50%}
+            100%   {background-position:80% 50%,20% 50%}
         }
 
         #loading-screen.hidden {
@@ -83,11 +89,11 @@
             margin-right: 10px;
         }
 
-        #upgrade-button {
+        #upgrade-button, #energy-upgrade-button {
             background: linear-gradient(45deg, #2196F3, #21CBF3);
         }
 
-        #upgrade-button:hover {
+        #upgrade-button:hover, #energy-upgrade-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(33, 203, 243, 0.6);
         }
@@ -101,9 +107,10 @@
             box-shadow: 0 4px 15px rgba(255, 235, 59, 0.6);
         }
 
-        #balance {
+        #balance, #energy {
             display: flex;
             align-items: center;
+            justify-content: center;
             margin-top: 20px;
             padding: 10px;
             background-color: #333;
@@ -111,15 +118,17 @@
             color: white;
             font-size: 20px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            width: 300px;
+            text-align: center;
         }
 
-        #balance img {
+        #balance img, #energy img {
             width: 30px;
             height: 30px;
             margin-right: 10px;
         }
 
-        #coins-per-tap {
+        #coins-per-tap, #energy-regeneration {
             margin-top: 20px;
             font-size: 20px;
             color: white;
@@ -199,11 +208,18 @@
         <img src="https://img.icons8.com/fluency/48/000000/coins.png" alt="Coins">
         <span id="balance-amount">0 coins</span>
     </div>
+    <div id="energy">
+        <img src="https://img.icons8.com/fluency/48/000000/lightning-bolt.png" alt="Energy">
+        <span id="current-energy">Energy: 0/0</span>
+    </div>
+    
     <button id="tap-button"></button>
 
     <button id="profile-button" class="cool-button"><i class="fas fa-user"></i>Go to Profile</button>
     <button id="upgrade-button" class="cool-button"><i class="fas fa-arrow-up"></i>Upgrade (Cost: <span id="upgrade-cost">10</span> coins)</button>
+    <button id="energy-upgrade-button" class="cool-button"><i class="fas fa-bolt"></i>Upgrade Energy (Cost: <span id="energy-upgrade-cost">20</span> coins)</button>
     <div id="coins-per-tap">Coins per tap: 1</div>
+    <div id="energy-regeneration">Energy regenerates every 3 seconds</div>
     <div id="error-message"></div>
 
     <!-- Notification for level up -->
@@ -223,109 +239,143 @@
         const telegramId = urlParams.get('telegramId');
         let coins = 0;
         let coinsPerTap = 1;
-
+        let energy = 10;
+        let maxEnergy = 10;
+        
         document.addEventListener('DOMContentLoaded', async () => {
-            setTimeout(() => {
-                document.getElementById('loading-screen').classList.add('hidden');
-            }, 1000); // Adjust the timeout as needed
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('hidden');
+        }, 1000); // Adjust the timeout as needed
 
-            try {
-                const response = await fetch(`/api/user/${telegramId}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const user = await response.json();
-                validateAndInitializeUserData(user);
-            } catch (error) {
-                displayError('Error fetching user data: ' + error.message);
-                console.error('Error fetching user data:', error);
+        try {
+            const response = await fetch(`/api/user/${telegramId}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
+            const user = await response.json();
+            validateAndInitializeUserData(user);
+        } catch (error) {
+            displayError('Error fetching user data: ' + error.message);
+            console.error('Error fetching user data:', error);
+        }
 
-            document.getElementById('tap-button').addEventListener('click', async () => {
+        document.getElementById('tap-button').addEventListener('click', async () => {
+            if (energy > 0) {
                 coins += coinsPerTap;
+                energy--;
                 updateUI();
                 await updateUser();
-            });
-
-            document.getElementById('upgrade-button').addEventListener('click', async () => {
-                const upgradeCost = coinsPerTap * 10;
-                if (coins >= upgradeCost) {
-                    coins -= upgradeCost;
-                    coinsPerTap++;
-                    updateUI();
-                    await updateUser();
-                    showLevelUpNotification();
-                } else {
-                    showNotification('insufficient-funds-notification');
-                }
-            });
-
-            document.getElementById('profile-button').addEventListener('click', async () => {
-                await updateUser();
-                window.location.href = `/profileView.html?telegramId=${telegramId}`;
-            });
-
-            window.addEventListener('beforeunload', async () => {
-                await updateUser();
-            });
+            } else {
+                showNotification('insufficient-funds-notification');
+            }
         });
 
-        function validateAndInitializeUserData(user) {
-            if (typeof user.coins !== 'number' || typeof user.coinsPerTap !== 'number') {
-                displayError('Invalid user data received.');
-                return;
+        document.getElementById('upgrade-button').addEventListener('click', async () => {
+            const upgradeCost = coinsPerTap * 10;
+            if (coins >= upgradeCost) {
+                coins -= upgradeCost;
+                coinsPerTap++;
+                updateUI();
+                await updateUser();
+                showLevelUpNotification();
+            } else {
+                showNotification('insufficient-funds-notification');
             }
-            coins = user.coins;
-            coinsPerTap = user.coinsPerTap;
+        });
 
-            updateUI();
-        }
-
-        function updateUI() {
-            document.getElementById('upgrade-cost').textContent = coinsPerTap * 10;
-            document.getElementById('balance-amount').textContent = `${coins} coins`;
-            document.getElementById('coins-per-tap').textContent = `Coins per tap: ${coinsPerTap}`;
-        }
-
-        async function updateUser() {
-            try {
-                await fetch('/api/update', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegramId, coins, coinsPerTap })
-                });
-                console.log('User data updated:', { coins, coinsPerTap });
-            } catch (error) {
-                displayError('Error updating user data: ' + error.message);
-                console.error('Error updating user data:', error);
+        document.getElementById('energy-upgrade-button').addEventListener('click', async () => {
+            const energyUpgradeCost = maxEnergy * 2;
+            if (coins >= energyUpgradeCost) {
+                coins -= energyUpgradeCost;
+                maxEnergy += 5;
+                updateUI();
+                await updateUser();
+                showLevelUpNotification();
+            } else {
+                showNotification('insufficient-funds-notification');
             }
-        }
+        });
 
-        function displayError(message) {
-            const errorMessageElement = document.getElementById('error-message');
-            errorMessageElement.textContent = message;
-        }
+        document.getElementById('profile-button').addEventListener('click', async () => {
+            await updateUser();
+            window.location.href = `/profileView.html?telegramId=${telegramId}`;
+        });
 
-        function showNotification(notificationId) {
-            const notification = document.getElementById(notificationId);
-            notification.style.display = 'block';
-            setTimeout(() => {
-                closeNotification(notificationId);
-            }, 3000);
-        }
+        window.addEventListener('beforeunload', async () => {
+            await updateUser();
+        });
 
-        function closeNotification(notificationId) {
-            const notification = document.getElementById(notificationId);
-            notification.style.display = 'none';
-        }
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy++;
+                updateUI();
+            }
+        }, 2000); // Regenerate energy every 3 seconds
+    });
 
-        function showLevelUpNotification() {
-            const levelUpNotification = document.getElementById('level-up-notification');
-            levelUpNotification.style.display = 'block';
-            setTimeout(() => {
-                closeNotification('level-up-notification');
-            }, 3000);
+    function validateAndInitializeUserData(user) {
+        if (typeof user.coins !== 'number' || typeof user.coinsPerTap !== 'number' || typeof user.maxEnergy !== 'number') {
+            displayError('Invalid user data received.');
+            return;
         }
+        coins = user.coins;
+        coinsPerTap = user.coinsPerTap;
+        maxEnergy = user.maxEnergy;
+        energy = user.energy; // Load energy from user data
+
+        updateUI();
+    }
+
+    function updateUI() {
+        document.getElementById('upgrade-cost').textContent = coinsPerTap * 10;
+        document.getElementById('energy-upgrade-cost').textContent = maxEnergy * 2;
+        document.getElementById('balance-amount').textContent = `${coins} coins`;
+        document.getElementById('current-energy').textContent = `Energy: ${energy}/${maxEnergy}`;
+        document.getElementById('coins-per-tap').textContent = `Coins per tap: ${coinsPerTap}`;
+    }
+
+    async function updateUser() {
+        try {
+            await fetch('/api/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegramId, coins, coinsPerTap, maxEnergy, energy })
+            });
+            console.log('User data updated:', { coins, coinsPerTap, maxEnergy, energy });
+        } catch (error) {
+            displayError('Error updating user data: ' + error.message);
+            console.error('Error updating user data:', error);
+        }
+    }
+
+
+
+    function displayError(message) {
+        const errorMessageElement = document.getElementById('error-message');
+        errorMessageElement.textContent = message;
+    }
+
+    function showNotification(notificationId) {
+        const notification = document.getElementById(notificationId);
+        notification.style.display = 'block';
+        setTimeout(() => {
+            closeNotification(notificationId);
+        }, 3000);
+    }
+
+    function closeNotification(notificationId) {
+        const notification = document.getElementById(notificationId);
+        notification.style.display = 'none';
+    }
+
+    function showLevelUpNotification() {
+        const levelUpNotification = document.getElementById('level-up-notification');
+        levelUpNotification.style.display = 'block';
+        setTimeout(() => {
+            closeNotification('level-up-notification');
+        }, 3000);
+    }
+
     </script>
 </body>
 </html>

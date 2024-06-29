@@ -9,11 +9,11 @@ mongoose.connect(process.env.MONGODB_URI, {
 });
 
 router.post('/', async (req, res) => {
-    const { telegramId, coins, coinsPerTap } = req.body;
+    const { telegramId, coins, coinsPerTap, maxEnergy, energy } = req.body;
     try {
         const user = await User.findOneAndUpdate(
             { telegramId },
-            { coins, coinsPerTap },
+            { coins, coinsPerTap, maxEnergy, energy, lastEnergyUpdate: Date.now() },
             { new: true }
         );
         if (!user) {

@@ -51,31 +51,3 @@ app.use((req, res, next) => {
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running at http://localhost:${PORT}`));
-
-// Запуск Telegram бота
-const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
-
-bot.onText(/\/start/, async (msg) => {
-    const chatId = msg.chat.id.toString();
-    try {
-        console.log(`Received /start command from chatId: ${chatId}`);
-        const user = await User.findOneAndUpdate(
-            { telegramId: chatId },
-            { telegramId: chatId },
-            { upsert: true, new: true, setDefaultsOnInsert: true }
-        );
-        console.log(`User ${chatId} upserted successfully`);
-
-        bot.sendMessage(chatId, 'Almost nothing, maybe.', {
-            reply_markup: {
-                inline_keyboard: [
-                    [{ text: 'Play', web_app: { url: `${process.env.WEB_APP_URL}/index.html?telegramId=${user.telegramId}` } }],
-                ]
-            }
-        });
-    } catch (error) {
-        console.error('Error during /start command:', error);
-    }
-});
-
-console.log('Bot started');
