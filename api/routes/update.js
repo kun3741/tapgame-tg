@@ -1,14 +1,19 @@
 const express = require('express');
 const router = express.Router();
 const User = require('../../models/User');
+const mongoose = require('mongoose');
 
-// Маршрут для оновлення користувача
+mongoose.connect(process.env.MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+});
+
 router.post('/', async (req, res) => {
-    const { telegramId, coins, upgradeLevel } = req.body;
+    const { telegramId, coins, coinsPerTap } = req.body;
     try {
         const user = await User.findOneAndUpdate(
             { telegramId },
-            { coins, upgradeLevel },
+            { coins, coinsPerTap },
             { new: true }
         );
         if (!user) {
@@ -22,5 +27,3 @@ router.post('/', async (req, res) => {
 });
 
 module.exports = router;
-
-

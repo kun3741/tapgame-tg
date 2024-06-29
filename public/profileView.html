@@ -4,25 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; background-color: #f0f0f0; font-family: Arial, sans-serif; }
-        #back-to-game-button { margin-top: 10px; padding: 10px; font-size: 16px; cursor: pointer; background-color: #2196F3; color: white; border: none; border-radius: 5px; }
-        #balance { margin-top: 20px; font-size: 20px; }
-        #error-message { color: red; margin-top: 20px; }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #272627;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
+        h1, h2 {
+            font-weight: 600;
+        }
+        #back-to-game-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background: linear-gradient(45deg, #2196F3, #21CBF3);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+        }
+        #back-to-game-button i {
+            margin-right: 10px;
+        }
+        #back-to-game-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(33, 203, 243, 0.6);
+        }
+        #balance, #coins-per-tap {
+            margin-top: 20px;
+            font-size: 20px;
+            background-color: #333;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+        }
+        #balance i, #coins-per-tap i {
+            margin-right: 10px;
+        }
+        #error-message {
+            color: red;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
     <h1>User Profile</h1>
-    <h2>User ID: <span id="userId"></span></h2>
-    <div id="balance">Balance: <span id="coins">0</span> coins</div>
-    <div id="upgrade-level">Upgrade Level: <span id="level">1</span></div>
-    <button id="back-to-game-button">Back to Game</button>
-    <div id="error-message"></div>
+    <div id="balance">
+        <i class="fas fa-coins"></i> Balance: <span id="balance-amount">0 coins</span>
+    </div>
+    <div id="coins-per-tap">
+        <i class="fas fa-arrow-up"></i> Coins per tap: <span id="coins-per-tap-amount">1</span>
+    </div>
+    <button id="back-to-game-button" class="cool-button"><i class="fas fa-arrow-left"></i>Back to Game</button>
     <script>
         const urlParams = new URLSearchParams(window.location.search);
         const telegramId = urlParams.get('telegramId');
-
-        document.getElementById('userId').textContent = telegramId;
 
         document.addEventListener('DOMContentLoaded', async () => {
             try {
@@ -31,29 +79,24 @@
                     throw new Error('Network response was not ok');
                 }
                 const user = await response.json();
-                validateAndDisplayUserData(user);
+                validateAndInitializeUserData(user);
             } catch (error) {
-                displayError('Error fetching user data: ' + error.message);
                 console.error('Error fetching user data:', error);
             }
+
+            document.getElementById('back-to-game-button').addEventListener('click', () => {
+                window.location.href = `/index.html?telegramId=${telegramId}`;
+            });
         });
 
-        document.getElementById('back-to-game-button').addEventListener('click', () => {
-            window.location.href = `/index.html?telegramId=${telegramId}`;
-        });
-
-        function validateAndDisplayUserData(user) {
-            if (typeof user.coins !== 'number' || typeof user.upgradeLevel !== 'number') {
-                displayError('Invalid user data received.');
+        function validateAndInitializeUserData(user) {
+            if (typeof user.coins !== 'number' || typeof user.coinsPerTap !== 'number') {
+                console.error('Invalid user data received.');
                 return;
             }
-            document.getElementById('coins').textContent = user.coins;
-            document.getElementById('level').textContent = user.upgradeLevel;
-        }
 
-        function displayError(message) {
-            const errorMessageElement = document.getElementById('error-message');
-            errorMessageElement.textContent = message;
+            document.getElementById('balance-amount').textContent = `${user.coins} coins`;
+            document.getElementById('coins-per-tap-amount').textContent = `${user.coinsPerTap}`;
         }
     </script>
 </body>
