@@ -66,11 +66,10 @@ bot.onText(/\/start/, async (msg) => {
         );
         console.log(`User ${chatId} upserted successfully`);
 
-        bot.sendMessage(chatId, 'Welcome! Click the button below to start tapping or view your profile.', {
+        bot.sendMessage(chatId, 'Probably nothing.', {
             reply_markup: {
                 inline_keyboard: [
-                    [{ text: 'Play Tap Game', web_app: { url: `${process.env.WEB_APP_URL}/index.html?telegramId=${user.telegramId}` } }],
-                    [{ text: 'View Profile', web_app: { url: `${process.env.WEB_APP_URL}/profileView.html?telegramId=${user.telegramId}` } }]
+                    [{ text: 'Play', web_app: { url: `${process.env.WEB_APP_URL}/index.html?telegramId=${user.telegramId}` } }]
                 ]
             }
         });
