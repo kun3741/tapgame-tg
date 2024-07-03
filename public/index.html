@@ -17,6 +17,7 @@
             font-family: 'Poppins', sans-serif;
             color: white;
             overflow: hidden;
+            position: relative; /* Add this line */
         }
         
         /* Loading Screen Styles */
@@ -180,6 +181,25 @@
             font-size: 20px;
             color: white;
         }
+
+        /* Styles for tap feedback */
+        .tap-feedback {
+            position: absolute;
+            color: white;
+            font-size: 24px;
+            pointer-events: none;
+            animation: fadeOut 1s ease forwards;
+        }
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
     </style>
 </head>
 <body>
@@ -235,10 +255,11 @@
             displayError('Error fetching user data: ' + error.message);
             console.error('Error fetching user data:', error);
         }
-        document.getElementById('tap-button').addEventListener('click', async () => {
+        document.getElementById('tap-button').addEventListener('click', async (event) => {
             if (energy > 0) {
                 coins += coinsPerTap;
                 energy--;
+                showTapFeedback(event, `+${coinsPerTap}`);
                 updateUI();
                 await updateUser();
             } else {
@@ -335,6 +356,17 @@
         setTimeout(() => {
             closeNotification('level-up-notification');
         }, 3000);
+    }
+    function showTapFeedback(event, text) {
+        const feedback = document.createElement('div');
+        feedback.className = 'tap-feedback';
+        feedback.textContent = text;
+        feedback.style.left = `${event.clientX}px`;
+        feedback.style.top = `${event.clientY}px`;
+        document.body.appendChild(feedback);
+        setTimeout(() => {
+            feedback.remove();
+        }, 1000);
     }
     </script>
 </body>
