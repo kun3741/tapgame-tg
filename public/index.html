@@ -7,22 +7,29 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
             background-color: #272627;
             font-family: 'Poppins', sans-serif;
             color: white;
             overflow: hidden;
-            margin: 0;
         }
 
-        /* Fullscreen button (hidden) */
-        #fullscreen-button {
-            display: none;
+        #container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
         }
 
         /* Loading Screen Styles */
@@ -211,41 +218,53 @@
         <div class="fidget-spinner"></div>
     </div>
 
-    <button id="fullscreen-button">Go Fullscreen</button>
+    <button id="fullscreen-button" style="display: none;"></button> <!-- Hidden button for fullscreen mode -->
 
-    <div id="balance">
-        <img src="https://img.icons8.com/fluency/48/000000/coins.png" alt="Coins">
-        <span id="balance-amount">0 coins</span>
-    </div>
-    <div id="energy">
-        <img src="https://img.icons8.com/fluency/48/000000/lightning-bolt.png" alt="Energy">
-        <span id="current-energy">Energy: 0/0</span>
-    </div>
-    
-    <button id="tap-button"></button>
+    <div id="container">
+        <div id="balance">
+            <img src="https://img.icons8.com/emoji/48/000000/coin-emoji.png" alt="Coin Icon">
+            <span id="balance-amount">0 coins</span>
+        </div>
 
-    <button id="profile-button" class="cool-button"><i class="fas fa-user"></i>Go to Profile</button>
-    <button id="upgrade-button" class="cool-button"><i class="fas fa-arrow-up"></i>Upgrade (Cost: <span id="upgrade-cost">10</span> coins)</button>
-    <button id="energy-upgrade-button" class="cool-button"><i class="fas fa-bolt"></i>Upgrade Energy (Cost: <span id="energy-upgrade-cost">20</span> coins)</button>
-    <div id="coins-per-tap">Coins per tap: 1</div>
-    <div id="energy-regeneration">Energy regenerates every 3 seconds</div>
-    <div id="error-message"></div>
+        <div id="energy">
+            <img src="https://img.icons8.com/emoji/48/000000/high-voltage-emoji.png" alt="Energy Icon">
+            <span id="current-energy">Energy: 10/10</span>
+        </div>
 
-    <!-- Notification for level up -->
-    <div id="level-up-notification" class="notification notification-green">
-        <span class="close" onclick="closeNotification('level-up-notification')">&times;</span>
-        Congratulations! You have leveled up.
-    </div>
+        <button id="tap-button"></button>
 
-    <!-- Notification for insufficient funds -->
-    <div id="insufficient-funds-notification" class="notification notification-red">
-        <span class="close" onclick="closeNotification('insufficient-funds-notification')">&times;</span>
-        You do not have enough coins to upgrade.
+        <div id="coins-per-tap">Coins per tap: 1</div>
+
+        <button class="cool-button" id="profile-button">
+            <i class="fas fa-user"></i>
+            Go to Profile
+        </button>
+
+        <button class="cool-button" id="upgrade-button">
+            <i class="fas fa-arrow-up"></i>
+            Upgrade (Cost: 10 coins)
+        </button>
+
+        <button class="cool-button" id="energy-upgrade-button">
+            <i class="fas fa-bolt"></i>
+            Upgrade Energy (Cost: 20 coins)
+        </button>
+
+        <div id="error-message"></div>
+
+        <!-- Notifications -->
+        <div id="insufficient-funds-notification" class="notification notification-red">
+            <span>Insufficient funds!</span>
+            <span class="close" onclick="closeNotification('insufficient-funds-notification')">&times;</span>
+        </div>
+        <div id="level-up-notification" class="notification notification-green">
+            <span>Level Up!</span>
+            <span class="close" onclick="closeNotification('level-up-notification')">&times;</span>
+        </div>
     </div>
 
     <script>
-        const urlParams = new URLSearchParams(window.location.search);
-        const telegramId = urlParams.get('telegramId');
+        const telegramId = new URLSearchParams(window.location.search).get('telegramId');
         let coins = 0;
         let coinsPerTap = 1;
         let energy = 10;
@@ -254,7 +273,6 @@
         document.addEventListener('DOMContentLoaded', async () => {
             setTimeout(() => {
                 document.getElementById('loading-screen').classList.add('hidden');
-                enterFullscreen();
             }, 1000); // Adjust the timeout as needed
 
             try {
@@ -320,7 +338,7 @@
                     energy++;
                     updateUI();
                 }
-            }, 2000); // Regenerate energy every 3 seconds
+            }, 2000); // Regenerate energy every 2 seconds
         });
 
         function validateAndInitializeUserData(user) {
@@ -384,18 +402,6 @@
             }, 3000);
         }
 
-        function enterFullscreen() {
-            const fullscreenButton = document.getElementById('fullscreen-button');
-            if (fullscreenButton.requestFullscreen) {
-                fullscreenButton.requestFullscreen();
-            } else if (fullscreenButton.mozRequestFullScreen) { // Firefox
-                fullscreenButton.mozRequestFullScreen();
-            } else if (fullscreenButton.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                fullscreenButton.webkitRequestFullscreen();
-            } else if (fullscreenButton.msRequestFullscreen) { // IE/Edge
-                fullscreenButton.msRequestFullscreen();
-            }
-        }
     </script>
 </body>
 </html>
