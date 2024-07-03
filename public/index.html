@@ -7,31 +7,18 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        body, html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
-
         body {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            height: 100vh;
             background-color: #272627;
             font-family: 'Poppins', sans-serif;
             color: white;
             overflow: hidden;
         }
-
-        #container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-        }
-
+        
         /* Loading Screen Styles */
         #loading-screen {
             position: fixed;
@@ -46,7 +33,6 @@
             z-index: 9999;
             transition: opacity 0.5s ease, visibility 0.5s ease;
         }
-
         .fidget-spinner {
             width: 80px;
             aspect-ratio: 1;
@@ -60,17 +46,15 @@
             filter: blur(4px) contrast(10); 
             animation: l18 0.8s infinite alternate;
         }
-
+        
         @keyframes l18 {
             0%,20% {background-position:20% 50%,80% 50%}
             100%   {background-position:80% 50%,20% 50%}
         }
-
         #loading-screen.hidden {
             opacity: 0;
             visibility: hidden;
         }
-
         #tap-button {
             background: url('https://kun.xxxx.rip/o77q9jyn.png') no-repeat center center;
             background-size: contain;
@@ -79,13 +63,13 @@
             border: none;
             cursor: pointer;
             transition: transform 0.1s;
-            -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable blue color on tap */
+            -webkit-tap-highlight-color: rgba(0,0,0,0); /* Вимкнути синій колір при натисканні */
         }
 
         #tap-button:active {
+  
             transform: scale(0.9);
         }
-
         .cool-button {
             margin-top: 10px;
             padding: 10px 20px;
@@ -98,29 +82,23 @@
             display: flex;
             align-items: center;
         }
-
         .cool-button i {
             margin-right: 10px;
         }
-
         #upgrade-button, #energy-upgrade-button {
             background: linear-gradient(45deg, #2196F3, #21CBF3);
         }
-
         #upgrade-button:hover, #energy-upgrade-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(33, 203, 243, 0.6);
         }
-
         #profile-button {
             background: linear-gradient(45deg, #FFC107, #FFEB3B);
         }
-
         #profile-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(255, 235, 59, 0.6);
         }
-
         #balance, #energy {
             display: flex;
             align-items: center;
@@ -135,24 +113,20 @@
             width: 300px;
             text-align: center;
         }
-
         #balance img, #energy img {
             width: 30px;
             height: 30px;
             margin-right: 10px;
         }
-
         #coins-per-tap, #energy-regeneration {
             margin-top: 20px;
             font-size: 20px;
             color: white;
         }
-
         #error-message {
             color: red;
             margin-top: 20px;
         }
-
         /* Styles for the notifications */
         .notification {
             display: none;
@@ -170,17 +144,14 @@
             max-width: 400px;
             animation: slideDown 0.5s forwards, slideUp 0.5s 2.5s forwards;
         }
-
         .notification-green {
             background-color: #68B684; /* Green color */
             color: white;
         }
-
         .notification-red {
             background-color: #ff6f61; /* Red color */
             color: white;
         }
-
         @keyframes slideDown {
             from {
                 opacity: 0;
@@ -191,7 +162,6 @@
                 transform: translate(-50%, 0);
             }
         }
-
         @keyframes slideUp {
             from {
                 opacity: 1;
@@ -202,7 +172,6 @@
                 transform: translate(-50%, -50px);
             }
         }
-
         .notification .close {
             position: absolute;
             top: 10px;
@@ -217,191 +186,156 @@
     <div id="loading-screen">
         <div class="fidget-spinner"></div>
     </div>
-
-    <button id="fullscreen-button" style="display: none;"></button> <!-- Hidden button for fullscreen mode -->
-
-    <div id="container">
-        <div id="balance">
-            <img src="https://img.icons8.com/emoji/48/000000/coin-emoji.png" alt="Coin Icon">
-            <span id="balance-amount">0 coins</span>
-        </div>
-
-        <div id="energy">
-            <img src="https://img.icons8.com/emoji/48/000000/high-voltage-emoji.png" alt="Energy Icon">
-            <span id="current-energy">Energy: 10/10</span>
-        </div>
-
-        <button id="tap-button"></button>
-
-        <div id="coins-per-tap">Coins per tap: 1</div>
-
-        <button class="cool-button" id="profile-button">
-            <i class="fas fa-user"></i>
-            Go to Profile
-        </button>
-
-        <button class="cool-button" id="upgrade-button">
-            <i class="fas fa-arrow-up"></i>
-            Upgrade (Cost: 10 coins)
-        </button>
-
-        <button class="cool-button" id="energy-upgrade-button">
-            <i class="fas fa-bolt"></i>
-            Upgrade Energy (Cost: 20 coins)
-        </button>
-
-        <div id="error-message"></div>
-
-        <!-- Notifications -->
-        <div id="insufficient-funds-notification" class="notification notification-red">
-            <span>Insufficient funds!</span>
-            <span class="close" onclick="closeNotification('insufficient-funds-notification')">&times;</span>
-        </div>
-        <div id="level-up-notification" class="notification notification-green">
-            <span>Level Up!</span>
-            <span class="close" onclick="closeNotification('level-up-notification')">&times;</span>
-        </div>
+    <div id="balance">
+        <img src="https://img.icons8.com/fluency/48/000000/coins.png" alt="Coins">
+        <span id="balance-amount">0 coins</span>
     </div>
-
+    <div id="energy">
+        <img src="https://img.icons8.com/fluency/48/000000/lightning-bolt.png" alt="Energy">
+        <span id="current-energy">Energy: 0/0</span>
+    </div>
+    
+    <button id="tap-button"></button>
+    <button id="profile-button" class="cool-button"><i class="fas fa-user"></i>Go to Profile</button>
+    <button id="upgrade-button" class="cool-button"><i class="fas fa-arrow-up"></i>Upgrade (Cost: <span id="upgrade-cost">10</span> coins)</button>
+    <button id="energy-upgrade-button" class="cool-button"><i class="fas fa-bolt"></i>Upgrade Energy (Cost: <span id="energy-upgrade-cost">20</span> coins)</button>
+    <div id="coins-per-tap">Coins per tap: 1</div>
+    <div id="energy-regeneration">Energy regenerates every 3 seconds</div>
+    <div id="error-message"></div>
+    <!-- Notification for level up -->
+    <div id="level-up-notification" class="notification notification-green">
+        <span class="close" onclick="closeNotification('level-up-notification')">&times;</span>
+        Congratulations! You have leveled up.
+    </div>
+    <!-- Notification for insufficient funds -->
+    <div id="insufficient-funds-notification" class="notification notification-red">
+        <span class="close" onclick="closeNotification('insufficient-funds-notification')">&times;</span>
+        You do not have enough coins to upgrade.
+    </div>
     <script>
-        const telegramId = new URLSearchParams(window.location.search).get('telegramId');
+        const urlParams = new URLSearchParams(window.location.search);
+        const telegramId = urlParams.get('telegramId');
         let coins = 0;
         let coinsPerTap = 1;
         let energy = 10;
         let maxEnergy = 10;
-
+        
         document.addEventListener('DOMContentLoaded', async () => {
-            setTimeout(() => {
-                document.getElementById('loading-screen').classList.add('hidden');
-            }, 1000); // Adjust the timeout as needed
-
-            try {
-                const response = await fetch(`/api/user/${telegramId}`);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const user = await response.json();
-                validateAndInitializeUserData(user);
-            } catch (error) {
-                displayError('Error fetching user data: ' + error.message);
-                console.error('Error fetching user data:', error);
+        setTimeout(() => {
+            document.getElementById('loading-screen').classList.add('hidden');
+        }, 1000); // Adjust the timeout as needed
+        try {
+            const response = await fetch(`/api/user/${telegramId}`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
             }
-
-            document.getElementById('tap-button').addEventListener('click', async () => {
-                if (energy > 0) {
-                    coins += coinsPerTap;
-                    energy--;
-                    updateUI();
-                    await updateUser();
-                } else {
-                    showNotification('insufficient-funds-notification');
-                }
-            });
-
-            document.getElementById('upgrade-button').addEventListener('click', async () => {
-                const upgradeCost = coinsPerTap * 10;
-                if (coins >= upgradeCost) {
-                    coins -= upgradeCost;
-                    coinsPerTap++;
-                    updateUI();
-                    await updateUser();
-                    showLevelUpNotification();
-                } else {
-                    showNotification('insufficient-funds-notification');
-                }
-            });
-
-            document.getElementById('energy-upgrade-button').addEventListener('click', async () => {
-                const energyUpgradeCost = maxEnergy * 2;
-                if (coins >= energyUpgradeCost) {
-                    coins -= energyUpgradeCost;
-                    maxEnergy += 5;
-                    updateUI();
-                    await updateUser();
-                    showLevelUpNotification();
-                } else {
-                    showNotification('insufficient-funds-notification');
-                }
-            });
-
-            document.getElementById('profile-button').addEventListener('click', async () => {
+            const user = await response.json();
+            validateAndInitializeUserData(user);
+        } catch (error) {
+            displayError('Error fetching user data: ' + error.message);
+            console.error('Error fetching user data:', error);
+        }
+        document.getElementById('tap-button').addEventListener('click', async () => {
+            if (energy > 0) {
+                coins += coinsPerTap;
+                energy--;
+                updateUI();
                 await updateUser();
-                window.location.href = `/profileView.html?telegramId=${telegramId}`;
-            });
-
-            window.addEventListener('beforeunload', async () => {
-                await updateUser();
-            });
-
-            setInterval(() => {
-                if (energy < maxEnergy) {
-                    energy++;
-                    updateUI();
-                }
-            }, 2000); // Regenerate energy every 2 seconds
+            } else {
+                showNotification('insufficient-funds-notification');
+            }
         });
-
-        function validateAndInitializeUserData(user) {
-            if (typeof user.coins !== 'number' || typeof user.coinsPerTap !== 'number' || typeof user.maxEnergy !== 'number') {
-                displayError('Invalid user data received.');
-                return;
+        document.getElementById('upgrade-button').addEventListener('click', async () => {
+            const upgradeCost = coinsPerTap * 10;
+            if (coins >= upgradeCost) {
+                coins -= upgradeCost;
+                coinsPerTap++;
+                updateUI();
+                await updateUser();
+                showLevelUpNotification();
+            } else {
+                showNotification('insufficient-funds-notification');
             }
-            coins = user.coins;
-            coinsPerTap = user.coinsPerTap;
-            maxEnergy = user.maxEnergy;
-            energy = user.energy; // Load energy from user data
-
-            updateUI();
-        }
-
-        function updateUI() {
-            document.getElementById('upgrade-cost').textContent = coinsPerTap * 10;
-            document.getElementById('energy-upgrade-cost').textContent = maxEnergy * 2;
-            document.getElementById('balance-amount').textContent = `${coins} coins`;
-            document.getElementById('current-energy').textContent = `Energy: ${energy}/${maxEnergy}`;
-            document.getElementById('coins-per-tap').textContent = `Coins per tap: ${coinsPerTap}`;
-        }
-
-        async function updateUser() {
-            try {
-                await fetch('/api/update', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ telegramId, coins, coinsPerTap, maxEnergy, energy })
-                });
-                console.log('User data updated:', { coins, coinsPerTap, maxEnergy, energy });
-            } catch (error) {
-                displayError('Error updating user data: ' + error.message);
-                console.error('Error updating user data:', error);
+        });
+        document.getElementById('energy-upgrade-button').addEventListener('click', async () => {
+            const energyUpgradeCost = maxEnergy * 2;
+            if (coins >= energyUpgradeCost) {
+                coins -= energyUpgradeCost;
+                maxEnergy += 5;
+                updateUI();
+                await updateUser();
+                showLevelUpNotification();
+            } else {
+                showNotification('insufficient-funds-notification');
             }
+        });
+        document.getElementById('profile-button').addEventListener('click', async () => {
+            await updateUser();
+            window.location.href = `/profileView.html?telegramId=${telegramId}`;
+        });
+        window.addEventListener('beforeunload', async () => {
+            await updateUser();
+        });
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy++;
+                updateUI();
+            }
+        }, 2000); // Regenerate energy every 3 seconds
+    });
+    function validateAndInitializeUserData(user) {
+        if (typeof user.coins !== 'number' || typeof user.coinsPerTap !== 'number' || typeof user.maxEnergy !== 'number') {
+            displayError('Invalid user data received.');
+            return;
         }
-
-        function displayError(message) {
-            const errorMessageElement = document.getElementById('error-message');
-            errorMessageElement.textContent = message;
+        coins = user.coins;
+        coinsPerTap = user.coinsPerTap;
+        maxEnergy = user.maxEnergy;
+        energy = user.energy; // Load energy from user data
+        updateUI();
+    }
+    function updateUI() {
+        document.getElementById('upgrade-cost').textContent = coinsPerTap * 10;
+        document.getElementById('energy-upgrade-cost').textContent = maxEnergy * 2;
+        document.getElementById('balance-amount').textContent = `${coins} coins`;
+        document.getElementById('current-energy').textContent = `Energy: ${energy}/${maxEnergy}`;
+        document.getElementById('coins-per-tap').textContent = `Coins per tap: ${coinsPerTap}`;
+    }
+    async function updateUser() {
+        try {
+            await fetch('/api/update', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ telegramId, coins, coinsPerTap, maxEnergy, energy })
+            });
+            console.log('User data updated:', { coins, coinsPerTap, maxEnergy, energy });
+        } catch (error) {
+            displayError('Error updating user data: ' + error.message);
+            console.error('Error updating user data:', error);
         }
-
-        function showNotification(notificationId) {
-            const notification = document.getElementById(notificationId);
-            notification.style.display = 'block';
-            setTimeout(() => {
-                closeNotification(notificationId);
-            }, 3000);
-        }
-
-        function closeNotification(notificationId) {
-            const notification = document.getElementById(notificationId);
-            notification.style.display = 'none';
-        }
-
-        function showLevelUpNotification() {
-            const levelUpNotification = document.getElementById('level-up-notification');
-            levelUpNotification.style.display = 'block';
-            setTimeout(() => {
-                closeNotification('level-up-notification');
-            }, 3000);
-        }
-
+    }
+    function displayError(message) {
+        const errorMessageElement = document.getElementById('error-message');
+        errorMessageElement.textContent = message;
+    }
+    function showNotification(notificationId) {
+        const notification = document.getElementById(notificationId);
+        notification.style.display = 'block';
+        setTimeout(() => {
+            closeNotification(notificationId);
+        }, 3000);
+    }
+    function closeNotification(notificationId) {
+        const notification = document.getElementById(notificationId);
+        notification.style.display = 'none';
+    }
+    function showLevelUpNotification() {
+        const levelUpNotification = document.getElementById('level-up-notification');
+        levelUpNotification.style.display = 'block';
+        setTimeout(() => {
+            closeNotification('level-up-notification');
+        }, 3000);
+    }
     </script>
 </body>
 </html>
