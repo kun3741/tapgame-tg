@@ -17,8 +17,14 @@
             font-family: 'Poppins', sans-serif;
             color: white;
             overflow: hidden;
+            margin: 0;
         }
-        
+
+        /* Fullscreen button (hidden) */
+        #fullscreen-button {
+            display: none;
+        }
+
         /* Loading Screen Styles */
         #loading-screen {
             position: fixed;
@@ -47,7 +53,7 @@
             filter: blur(4px) contrast(10); 
             animation: l18 0.8s infinite alternate;
         }
-        
+
         @keyframes l18 {
             0%,20% {background-position:20% 50%,80% 50%}
             100%   {background-position:80% 50%,20% 50%}
@@ -66,7 +72,7 @@
             border: none;
             cursor: pointer;
             transition: transform 0.1s;
-            -webkit-tap-highlight-color: rgba(0,0,0,0); /* Вимкнути синій колір при натисканні */
+            -webkit-tap-highlight-color: rgba(0,0,0,0); /* Disable blue color on tap */
         }
 
         #tap-button:active {
@@ -205,6 +211,8 @@
         <div class="fidget-spinner"></div>
     </div>
 
+    <button id="fullscreen-button">Go Fullscreen</button>
+
     <div id="balance">
         <img src="https://img.icons8.com/fluency/48/000000/coins.png" alt="Coins">
         <span id="balance-amount">0 coins</span>
@@ -242,141 +250,152 @@
         let coinsPerTap = 1;
         let energy = 10;
         let maxEnergy = 10;
-        
+
         document.addEventListener('DOMContentLoaded', async () => {
-        setTimeout(() => {
-            document.getElementById('loading-screen').classList.add('hidden');
-        }, 1000); // Adjust the timeout as needed
+            setTimeout(() => {
+                document.getElementById('loading-screen').classList.add('hidden');
+                enterFullscreen();
+            }, 1000); // Adjust the timeout as needed
 
-        try {
-            const response = await fetch(`/api/user/${telegramId}`);
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
+            try {
+                const response = await fetch(`/api/user/${telegramId}`);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const user = await response.json();
+                validateAndInitializeUserData(user);
+            } catch (error) {
+                displayError('Error fetching user data: ' + error.message);
+                console.error('Error fetching user data:', error);
             }
-            const user = await response.json();
-            validateAndInitializeUserData(user);
-        } catch (error) {
-            displayError('Error fetching user data: ' + error.message);
-            console.error('Error fetching user data:', error);
-        }
 
-        document.getElementById('tap-button').addEventListener('click', async () => {
-            if (energy > 0) {
-                coins += coinsPerTap;
-                energy--;
-                updateUI();
-                await updateUser();
-            } else {
-                showNotification('insufficient-funds-notification');
-            }
-        });
-
-        document.getElementById('upgrade-button').addEventListener('click', async () => {
-            const upgradeCost = coinsPerTap * 10;
-            if (coins >= upgradeCost) {
-                coins -= upgradeCost;
-                coinsPerTap++;
-                updateUI();
-                await updateUser();
-                showLevelUpNotification();
-            } else {
-                showNotification('insufficient-funds-notification');
-            }
-        });
-
-        document.getElementById('energy-upgrade-button').addEventListener('click', async () => {
-            const energyUpgradeCost = maxEnergy * 2;
-            if (coins >= energyUpgradeCost) {
-                coins -= energyUpgradeCost;
-                maxEnergy += 5;
-                updateUI();
-                await updateUser();
-                showLevelUpNotification();
-            } else {
-                showNotification('insufficient-funds-notification');
-            }
-        });
-
-        document.getElementById('profile-button').addEventListener('click', async () => {
-            await updateUser();
-            window.location.href = `/profileView.html?telegramId=${telegramId}`;
-        });
-
-        window.addEventListener('beforeunload', async () => {
-            await updateUser();
-        });
-
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy++;
-                updateUI();
-            }
-        }, 2000); // Regenerate energy every 3 seconds
-    });
-
-    function validateAndInitializeUserData(user) {
-        if (typeof user.coins !== 'number' || typeof user.coinsPerTap !== 'number' || typeof user.maxEnergy !== 'number') {
-            displayError('Invalid user data received.');
-            return;
-        }
-        coins = user.coins;
-        coinsPerTap = user.coinsPerTap;
-        maxEnergy = user.maxEnergy;
-        energy = user.energy; // Load energy from user data
-
-        updateUI();
-    }
-
-    function updateUI() {
-        document.getElementById('upgrade-cost').textContent = coinsPerTap * 10;
-        document.getElementById('energy-upgrade-cost').textContent = maxEnergy * 2;
-        document.getElementById('balance-amount').textContent = `${coins} coins`;
-        document.getElementById('current-energy').textContent = `Energy: ${energy}/${maxEnergy}`;
-        document.getElementById('coins-per-tap').textContent = `Coins per tap: ${coinsPerTap}`;
-    }
-
-    async function updateUser() {
-        try {
-            await fetch('/api/update', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ telegramId, coins, coinsPerTap, maxEnergy, energy })
+            document.getElementById('tap-button').addEventListener('click', async () => {
+                if (energy > 0) {
+                    coins += coinsPerTap;
+                    energy--;
+                    updateUI();
+                    await updateUser();
+                } else {
+                    showNotification('insufficient-funds-notification');
+                }
             });
-            console.log('User data updated:', { coins, coinsPerTap, maxEnergy, energy });
-        } catch (error) {
-            displayError('Error updating user data: ' + error.message);
-            console.error('Error updating user data:', error);
+
+            document.getElementById('upgrade-button').addEventListener('click', async () => {
+                const upgradeCost = coinsPerTap * 10;
+                if (coins >= upgradeCost) {
+                    coins -= upgradeCost;
+                    coinsPerTap++;
+                    updateUI();
+                    await updateUser();
+                    showLevelUpNotification();
+                } else {
+                    showNotification('insufficient-funds-notification');
+                }
+            });
+
+            document.getElementById('energy-upgrade-button').addEventListener('click', async () => {
+                const energyUpgradeCost = maxEnergy * 2;
+                if (coins >= energyUpgradeCost) {
+                    coins -= energyUpgradeCost;
+                    maxEnergy += 5;
+                    updateUI();
+                    await updateUser();
+                    showLevelUpNotification();
+                } else {
+                    showNotification('insufficient-funds-notification');
+                }
+            });
+
+            document.getElementById('profile-button').addEventListener('click', async () => {
+                await updateUser();
+                window.location.href = `/profileView.html?telegramId=${telegramId}`;
+            });
+
+            window.addEventListener('beforeunload', async () => {
+                await updateUser();
+            });
+
+            setInterval(() => {
+                if (energy < maxEnergy) {
+                    energy++;
+                    updateUI();
+                }
+            }, 2000); // Regenerate energy every 3 seconds
+        });
+
+        function validateAndInitializeUserData(user) {
+            if (typeof user.coins !== 'number' || typeof user.coinsPerTap !== 'number' || typeof user.maxEnergy !== 'number') {
+                displayError('Invalid user data received.');
+                return;
+            }
+            coins = user.coins;
+            coinsPerTap = user.coinsPerTap;
+            maxEnergy = user.maxEnergy;
+            energy = user.energy; // Load energy from user data
+
+            updateUI();
         }
-    }
 
+        function updateUI() {
+            document.getElementById('upgrade-cost').textContent = coinsPerTap * 10;
+            document.getElementById('energy-upgrade-cost').textContent = maxEnergy * 2;
+            document.getElementById('balance-amount').textContent = `${coins} coins`;
+            document.getElementById('current-energy').textContent = `Energy: ${energy}/${maxEnergy}`;
+            document.getElementById('coins-per-tap').textContent = `Coins per tap: ${coinsPerTap}`;
+        }
 
+        async function updateUser() {
+            try {
+                await fetch('/api/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ telegramId, coins, coinsPerTap, maxEnergy, energy })
+                });
+                console.log('User data updated:', { coins, coinsPerTap, maxEnergy, energy });
+            } catch (error) {
+                displayError('Error updating user data: ' + error.message);
+                console.error('Error updating user data:', error);
+            }
+        }
 
-    function displayError(message) {
-        const errorMessageElement = document.getElementById('error-message');
-        errorMessageElement.textContent = message;
-    }
+        function displayError(message) {
+            const errorMessageElement = document.getElementById('error-message');
+            errorMessageElement.textContent = message;
+        }
 
-    function showNotification(notificationId) {
-        const notification = document.getElementById(notificationId);
-        notification.style.display = 'block';
-        setTimeout(() => {
-            closeNotification(notificationId);
-        }, 3000);
-    }
+        function showNotification(notificationId) {
+            const notification = document.getElementById(notificationId);
+            notification.style.display = 'block';
+            setTimeout(() => {
+                closeNotification(notificationId);
+            }, 3000);
+        }
 
-    function closeNotification(notificationId) {
-        const notification = document.getElementById(notificationId);
-        notification.style.display = 'none';
-    }
+        function closeNotification(notificationId) {
+            const notification = document.getElementById(notificationId);
+            notification.style.display = 'none';
+        }
 
-    function showLevelUpNotification() {
-        const levelUpNotification = document.getElementById('level-up-notification');
-        levelUpNotification.style.display = 'block';
-        setTimeout(() => {
-            closeNotification('level-up-notification');
-        }, 3000);
-    }
+        function showLevelUpNotification() {
+            const levelUpNotification = document.getElementById('level-up-notification');
+            levelUpNotification.style.display = 'block';
+            setTimeout(() => {
+                closeNotification('level-up-notification');
+            }, 3000);
+        }
 
+        function enterFullscreen() {
+            const fullscreenButton = document.getElementById('fullscreen-button');
+            if (fullscreenButton.requestFullscreen) {
+                fullscreenButton.requestFullscreen();
+            } else if (fullscreenButton.mozRequestFullScreen) { // Firefox
+                fullscreenButton.mozRequestFullScreen();
+            } else if (fullscreenButton.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                fullscreenButton.webkitRequestFullscreen();
+            } else if (fullscreenButton.msRequestFullscreen) { // IE/Edge
+                fullscreenButton.msRequestFullscreen();
+            }
+        }
     </script>
 </body>
 </html>
