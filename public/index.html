@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Tap Game</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -20,7 +20,6 @@
             position: relative;
         }
         
-        /* Loading Screen Styles */
         #loading-screen {
             position: fixed;
             top: 0;
@@ -46,7 +45,7 @@
             background-repeat: no-repeat;
             filter: blur(4px) contrast(10); 
             animation: l18 0.8s infinite alternate;
-        }
+        } 
         
         @keyframes l18 {
             0%,20% {background-position:20% 50%,80% 50%}
@@ -59,8 +58,9 @@
         #tap-button {
             background: url('https://kun.xxxx.rip/o77q9jyn.png') no-repeat center center;
             background-size: contain;
-            width: 200px;
-            height: 200px;
+            width: 250px;
+            height: 250px;
+            margin-top: 50px;
             border: none;
             cursor: pointer;
             transition: transform 0.1s;
@@ -108,7 +108,8 @@
             background-color: #333;
             border-radius: 10px;
             color: white;
-            font-size: 20px;
+            font-family: "Comfortaa";
+            font-size: 25px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             width: auto;
             text-align: center;
@@ -125,20 +126,20 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             width: auto;
             text-align: center;
-            position: fixed; /* Фіксоване позиціонування відносно вікна браузера */
-            bottom: 10px; /* Відступ від нижнього краю */
+            position: fixed; 
+            bottom: 10px; 
             left: 10px;
         }
         #balance img, #energy img {
-            width: 30px;
-            height: 30px;
+            width: 35px;
+            height: 35px;
             margin-right: 10px;
         }
         #error-message {
             color: red;
             margin-top: 20px;
         }
-        /* Styles for the notifications */
+
         .notification {
             display: none;
             position: fixed;
@@ -156,11 +157,11 @@
             animation: slideDown 0.5s forwards, slideUp 0.5s 2.5s forwards;
         }
         .notification-green {
-            background-color: #68B684; /* Green color */
+            background-color: #68B684;
             color: white;
         }
         .notification-red {
-            background-color: #ff6f61; /* Red color */
+            background-color: #ff6f61;
             color: white;
         }
         @keyframes slideDown {
@@ -192,7 +193,7 @@
             color: white;
         }
 
-        /* Styles for tap feedback */
+
         .tap-feedback {
             position: absolute;
             color: white;
@@ -211,15 +212,15 @@
             }
         }
         #submenu {
-        display: none; /* Спочатку сховане */
-        position: fixed;
-        bottom: 70px; /* Відстань від нижнього краю */
-        right: 10px; /* Відстань від правого краю */
-        background-color: #333;
-        border-radius: 10px;
-        padding: 10px;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-        z-index: 1000;
+            display: none; 
+            position: fixed;
+            bottom: 70px; 
+            right: 10px; 
+            background-color: #333;
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
         }
         #submenu button {
             display: block;
@@ -239,6 +240,8 @@
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(33, 203, 243, 0.6);
         }
+
+        
         
         #menu-button {
             position: fixed;
@@ -313,7 +316,7 @@
         document.addEventListener('DOMContentLoaded', async () => {
         setTimeout(() => {
             document.getElementById('loading-screen').classList.add('hidden');
-        }, 1000); // Adjust the timeout as needed
+        }, 1000); 
         try {
             const response = await fetch(`/api/user/${telegramId}`);
             if (!response.ok) {
@@ -382,7 +385,7 @@
             coins = user.coins;
             coinsPerTap = user.coinsPerTap;
             maxEnergy = user.maxEnergy;
-            energy = user.energy; // Load energy from user data
+            energy = user.energy; 
             updateUI();
         }
         function updateUI() {
